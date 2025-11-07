@@ -8,6 +8,8 @@ from threading import Thread
 from typing import Any, Dict, List, MutableMapping, MutableSequence, Optional, Union
 
 import __main__
+
+import omegaconf
 import wandb
 import yaml
 from hydra.core import plugins
@@ -388,14 +390,18 @@ def flatten_dict(d: MutableMapping, parent_key: str = "", sep: str = "."):
 # provided by the user in any of the params to be sweeped through.
 class WandbSweeperImpl(Sweeper):
     def __init__(
-        self, wandb_sweep_config: WandbConfig, params: Optional[DictConfig]
+        self,
+        wandb_sweep_config: WandbConfig,
+        params: Optional[Union[DictConfig, dict]],
     ) -> None:
         self.wandb_sweep_config = wandb_sweep_config
         self.params: Dict[str, Any] = {}
 
         # setup wandb params from hydra.sweep.params
         if params is not None:
-            assert isinstance(params, DictConfig)
+            if isinstance(params, dict):
+                params = omegaconf.OmegaConf.create(params)
+            assert isinstance(params, DictConfig), f"invalid params type: {type(params)}"
             self.params = {
                 str(x): create_wandb_param_from_config(y, wandb_sweep_config.method)
                 for x, y in params.items()
