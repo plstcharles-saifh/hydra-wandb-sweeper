@@ -1,5 +1,5 @@
 from importlib import import_module
-from typing import List, Optional
+from typing import List, Optional, Any, override
 
 from hydra import TaskFunction
 from hydra.plugins.sweeper import Sweeper
@@ -17,6 +17,7 @@ class WandbSweeper(Sweeper):
 
         self.sweeper = _impl.WandbSweeperImpl(wandb_sweep_config, params)
 
+    @override
     def setup(
         self,
         *,
@@ -28,5 +29,6 @@ class WandbSweeper(Sweeper):
             hydra_context=hydra_context, task_function=task_function, config=config
         )
 
-    def sweep(self, arguments: List[str]) -> None:
+    @override
+    def sweep(self, arguments: List[str]) -> Any:
         return self.sweeper.sweep(arguments)

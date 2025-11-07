@@ -473,7 +473,7 @@ class WandbSweeperImpl(Sweeper):
         self.program = __main_file__
         self.program_relpath = __main_file__
 
-    def sweep(self, arguments: List[str]) -> None:
+    def sweep(self, arguments: List[str]) -> Any:
         assert self.config is not None
         assert self.launcher is not None
         assert self.job_idx is not None
@@ -665,6 +665,7 @@ class WandbSweeperImpl(Sweeper):
                 break
 
             all_returns.extend(returns)
+        return all_returns
 
     class WandbTask(TaskFunction):
         """
