@@ -1,5 +1,6 @@
 import logging
 import os
+import pathlib
 from functools import partial
 from inspect import isclass
 from pathlib import Path
@@ -26,7 +27,6 @@ from hydra.utils import to_absolute_path
 from omegaconf import DictConfig, ListConfig, OmegaConf
 from wandb.agents.pyagent import Agent, RunStatus
 from wandb.apis import InternalApi
-from wandb.sdk.lib import filesystem
 from wandb.sdk.wandb_setup import _EarlyLogger
 from wandb.sdk.wandb_sweep import _get_sweep_url
 
@@ -119,7 +119,7 @@ def _my_save_config_file_from_dict(config_filename, config_dict):
     if "/.wandb/" not in config_filename and "/wandb/" in config_filename:
         config_filename = config_filename.replace("/wandb/", "/.wandb/", 1)
         os.environ[wandb.env.SWEEP_PARAM_PATH] = config_filename
-    filesystem._safe_makedirs(os.path.dirname(config_filename))
+    pathlib.Path(os.path.dirname(config_filename)).mkdir(parents=True, exist_ok=True)
     with open(config_filename, "w") as conf_file:
         conf_file.write(data)
 
