@@ -712,7 +712,10 @@ class WandbSweeperImpl(Sweeper):
         """
 
         def __init__(
-            self, *, task_function: TaskFunction, wandb_sweeper: Sweeper
+            self,
+            *,
+            task_function: TaskFunction,
+            wandb_sweeper: "WandbSweeperImpl",
         ) -> None:
             self.inner_task_function = task_function
             self.wandb_sweeper = wandb_sweeper
@@ -725,7 +728,6 @@ class WandbSweeperImpl(Sweeper):
         def __call__(self, base_config: DictConfig) -> None:
             runtime_cfg = HydraConfig.get()
             sweep_dir = Path(to_absolute_path(runtime_cfg.sweep.dir))
-            sweep_subdir = sweep_dir / Path(runtime_cfg.sweep.subdir)
 
             # Need to set PROGRAM env var to original program location since passing it through wandb_settings doesn't
             # apply to wandb.agent which checks where the program is located in order to do code-save-related things.
@@ -745,9 +747,10 @@ class WandbSweeperImpl(Sweeper):
                     )
                 else:
                     logger.info(f"Agent {agent_id} initializing a Run...")
+                sweep_name = self.wandb_sweeper.wandb_sweep_config.name
                 with wandb.init(
-                    name=sweep_subdir.name,
-                    group=sweep_dir.name,
+                    name=f"{sweep_name}-{len(run_results)}",
+                    group=sweep_name,
                     settings=wandb_settings,
                     notes=self.wandb_sweeper.wandb_notes,
                     tags=self.wandb_sweeper.wandb_tags,
