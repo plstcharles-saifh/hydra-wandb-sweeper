@@ -39,19 +39,31 @@ from hydra_plugins.hydra_wandb_sweeper.config import WandbConfig, WandbParameter
 logger = logging.getLogger(__name__)
 
 SUPPORTED_DISTRIBUTIONS = {
-    "constant": ["value"],
+    "beta": ["a", "b"],
     "categorical": ["values"],
+    "categorical_w_probabilities": ["values", "probabilities"],
+    "constant": ["value"],
     "int_uniform": ["min", "max"],
-    "uniform": ["min", "max"],
-    "q_uniform": ["min", "max", "q"],
-    "log_uniform": ["min", "max"],
-    "q_log_uniform": ["min", "max", "q"],
     "inv_log_uniform": ["min", "max"],
-    "normal": ["mu", "sigma"],
-    "q_normal": ["mu", "sigma", "q"],
+    "inv_log_uniform_values": ["min", "max"],
     "log_normal": ["mu", "sigma"],
+    "log_uniform": ["min", "max"],
+    "log_uniform_values": ["min", "max"],
+    "normal": ["mu", "sigma"],
+    "q_beta": ["a", "b", "q"],
     "q_log_normal": ["mu", "sigma", "q"],
+    "q_log_uniform": ["min", "max", "q"],
+    "q_log_uniform_values": ["min", "max", "q"],
+    "q_normal": ["mu", "sigma", "q"],
+    "q_uniform": ["min", "max", "q"],
+    "uniform": ["min", "max"],
 }
+"""Dictionary of supported distributions and their supported arguments.
+
+Last update: 2025-11-07.
+
+To get an up-to-date list based on wandb's sweeps repo, run `scripts/get_supported_distribs.py`.
+"""
 
 SUPPORTED_SEARCH_METHODS_AND_CONSTRAINTS = {
     "grid": ["value", "values"],
