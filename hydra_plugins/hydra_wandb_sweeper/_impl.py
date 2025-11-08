@@ -758,6 +758,7 @@ class WandbSweeperImpl(Sweeper):
                     tags=self.wandb_sweeper.wandb_tags,
                     dir=str(sweep_dir),
                     resume=True if self.from_preemption else None,
+                    mode=os.environ.get("WANDB_MODE", None),
                 ) as run:
                     self.from_preemption = False
                     self.num_runs[agent_id] += 1
@@ -788,7 +789,7 @@ class WandbSweeperImpl(Sweeper):
 
                     logger.info(
                         f"Agent {agent_id} initialized Run with ID: {run.id}, Name: {run.name}, "
-                        f"Config: {flatten_dict(run.config.as_dict())} at URL: {run.get_url()}"
+                        f"Config: {flatten_dict(run.config.as_dict())} at URL: {run.url}"
                     )
 
                     # TODO: catch RuntimeError('CUDA out of memory....) and tell wandb to mark the run as having
