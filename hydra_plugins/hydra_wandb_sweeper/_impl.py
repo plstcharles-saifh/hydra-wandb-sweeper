@@ -70,12 +70,24 @@ SUPPORTED_SEARCH_METHODS_AND_CONSTRAINTS = {
     "random": ["distribution"],
     "bayes": ["distribution"],
 }
+"""Dictionary of supported search methods and their constraints.
+
+Last update: 2025-11-07.
+
+Refer to the wandb documentation if you ever believe these are out-of-date.
+"""
 
 SUPPORTED_METRIC_ARGS = {
     "name": [str],
     "goal": ["minimize", "maximize"],
     "target": [float],
 }
+"""Dictionary of supported metric arguments.
+
+Last update: 2025-11-07.
+
+Refer to the wandb documentation if you ever believe these are out-of-date.
+"""
 
 SUPPORTED_EARLY_TERM_ARGS = {
     "type": ["hyperband"],
@@ -83,7 +95,14 @@ SUPPORTED_EARLY_TERM_ARGS = {
     "max_iter": [int],
     "s": [int],
     "eta": [int],
+    "strict": [bool],
 }
+"""Dictionary of supported early termination arguments.
+
+Last update: 2025-11-07.
+
+Refer to the wandb documentation if you ever believe these are out-of-date.
+"""
 
 
 __original_cwd__ = os.getcwd()
