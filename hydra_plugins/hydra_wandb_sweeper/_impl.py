@@ -1,3 +1,4 @@
+import datetime
 import logging
 import os
 import pathlib
@@ -748,8 +749,9 @@ class WandbSweeperImpl(Sweeper):
                 else:
                     logger.info(f"Agent {agent_id} initializing a Run...")
                 sweep_name = self.wandb_sweeper.wandb_sweep_config.name
+                curr_timestamp = datetime.datetime.now().strftime('%Y%m%d-%H%M%S')
                 with wandb.init(
-                    name=f"{sweep_name}-{len(run_results)}",
+                    name=f"{sweep_name}-{curr_timestamp}",
                     group=sweep_name,
                     settings=wandb_settings,
                     notes=self.wandb_sweeper.wandb_notes,
