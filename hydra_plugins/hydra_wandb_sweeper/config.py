@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, MutableSequence, Optional
 
 from hydra.core.config_store import ConfigStore
-from omegaconf import MISSING, DictConfig, ListConfig
+from omegaconf import MISSING, DictConfig, ListConfig, OmegaConf
 
 
 @dataclass
@@ -56,7 +56,9 @@ class WandbConfig:
     count: Optional[int] = 1
 
     # Specify the metric to optimize (only used by certain search strategies and stopping criteria).
-    metric: Optional[DictConfig] = DictConfig({})
+    metric: Optional[DictConfig] = field(
+        default_factory=lambda: OmegaConf.create({})
+    )
 
     # Number of agents to launch in a batch until budget is reached
     num_agents: Optional[int] = 1
@@ -73,11 +75,15 @@ class WandbConfig:
     project: Optional[str] = None
 
     # Wandb early termination. Check wandb.yaml in /example for an example config
-    early_terminate: Optional[DictConfig] = DictConfig({})
+    early_terminate: Optional[DictConfig] = field(
+        default_factory=lambda: OmegaConf.create({})
+    )
 
     # Tags can be used to label runs from an agent with particular features, such as
     # the runs being pre-emptible. It's all up to the user to fill this out.
-    tags: Optional[ListConfig] = ListConfig([])
+    tags: Optional[ListConfig] = field(
+        default_factory=lambda: OmegaConf.create([])
+    )
 
     # Total number of agents to launch
     budget: Optional[int] = 1
@@ -91,6 +97,37 @@ class WandbConfig:
 
     # Maximum authorized failure rate for a batch of wandb agents launched by the launcher
     max_agent_failure_rate: float = 0.0
+
+    def __post_init__(self) -> None:
+        self.metric = self._ensure_dictconfig(self.metric, "metric")
+        self.early_terminate = self._ensure_dictconfig(
+            self.early_terminate, "early_terminate"
+        )
+        self.tags = self._ensure_listconfig(self.tags, "tags")
+
+    @staticmethod
+    def _ensure_dictconfig(
+        value: Optional[Any], field_name: str
+    ) -> Optional[DictConfig]:
+        if value is None or isinstance(value, DictConfig):
+            return value
+        if isinstance(value, dict):
+            return OmegaConf.create(value)
+        raise TypeError(
+            f"Expected `{field_name}` to be a DictConfig or dict, got {type(value)!r}."
+        )
+
+    @staticmethod
+    def _ensure_listconfig(
+        value: Optional[Any], field_name: str
+    ) -> Optional[ListConfig]:
+        if value is None or isinstance(value, ListConfig):
+            return value
+        if isinstance(value, (list, tuple)):
+            return OmegaConf.create(list(value))
+        raise TypeError(
+            f"Expected `{field_name}` to be a ListConfig or sequence, got {type(value)!r}."
+        )
 
 
 @dataclass
