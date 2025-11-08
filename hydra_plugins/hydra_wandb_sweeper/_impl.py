@@ -734,7 +734,6 @@ class WandbSweeperImpl(Sweeper):
             wandb_settings = wandb.Settings(
                 program=self.wandb_sweeper.program,
                 program_relpath=self.wandb_sweeper.program_relpath,
-                start_method="thread",
             )
 
             run_results: List[Any] = []
