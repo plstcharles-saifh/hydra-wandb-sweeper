@@ -136,6 +136,8 @@ def _my_gitrepo_init(self, root=None, remote="origin", lazy=True):
 # before the task function is pickled via executor.map_array. After unpickling at the node for task fn execution,
 # the reference wandb.sdk.lib.git.GitRepo.__init__ -> _my_gitrepo_init is still preserved with original_cwd within
 # _my_gitrepo_init preserving its previous value.
+import wandb.sdk.lib.gitlib  # explicit import required for monkeypatching
+
 wandb.sdk.lib.gitlib.GitRepo.__init__ = _my_gitrepo_init
 
 

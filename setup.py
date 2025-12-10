@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name="hydra-wandb-sweeper",
-    version="0.0.5",
+    version="0.0.6",
     author="Adrish Dey",
     author_email="adrish@wandb.com",
     description="Hydra sweeps with WandB sweeps",
